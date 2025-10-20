@@ -4,7 +4,7 @@
 #include "linked_list.h"
 
 
-TEST(LinkedListsTests, Constructors){
+TEST(LinkedListsTests, SingleConstructors){
     std::shared_ptr<int> test_int_ptr = std::make_shared<int>(10);
     mgg::LinkedList<int> ll1, ll2(test_int_ptr);
 
@@ -12,7 +12,7 @@ TEST(LinkedListsTests, Constructors){
     EXPECT_TRUE(ll2.contains(test_int_ptr));
 }
 
-TEST(LinkedListsTests, add){
+TEST(LinkedListsTests, SingleAdd){
     std::shared_ptr<int> test_int_ptr = std::make_shared<int>(0);
     mgg::LinkedList<int> ll1, ll2(test_int_ptr);
 
@@ -20,13 +20,13 @@ TEST(LinkedListsTests, add){
     EXPECT_EQ(ll1.size(), 1);
     EXPECT_TRUE(ll1.contains(test_int_ptr));
 
-    std::shared_ptr<int> test_int_ptr2(1);
+    std::shared_ptr<int> test_int_ptr2 = std::make_shared<int>(2);
     ll2.add(test_int_ptr2);
     EXPECT_EQ(ll2.size(), 2);
     EXPECT_TRUE(ll2.contains(test_int_ptr2));
 }
 
-TEST(LinkedListsTests, remove){
+TEST(LinkedListsTests, SingleRemove){
     mgg::LinkedList<int> ll(std::make_shared<int>(0));
 
     ll.add(std::make_shared<int>(1));
@@ -37,5 +37,28 @@ TEST(LinkedListsTests, remove){
 
     EXPECT_FALSE(ll.contains(std::make_shared<int>(2)));
     EXPECT_EQ(ll.size(), 3);
+}
 
+TEST(LinkedListsTest, SingleSearch){
+    mgg::LinkedList<int> ll(std::make_shared<int>(0));
+    auto test_ptr = std::make_shared<int>(10);
+
+    ll.add(std::make_shared<int>(1));
+    ll.add(std::make_shared<int>(test_ptr));
+    ll.add(std::make_shared<int>(100));
+    ll.add(std::make_shared<int>(1000));
+    EXPECT_EQ(ll.size(), 4);
+    EXPECT_TRUE(ll.contains(test_ptr));
+
+    auto searched =  ll.search(test_ptr);
+    EXPECT_EQ(*searched, *test_ptr);
+
+    ll.remove(test_ptr);
+    searched = ll.search(test_ptr);
+    EXPECT_FALSE(searched);
+
+    mgg::LinkedList<int> emptyLL;
+    searched = emptyLL.search(test_ptr);
+    EXPECT_FALSE(searched);
+    
 }

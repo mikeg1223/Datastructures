@@ -1,46 +1,51 @@
 #include <memory>
 namespace mgg{
 
+namespace {
+
 template <typename T>
 struct Node{
-    std::shared_ptr<Node<T>> next;
+    std::unique_ptr<Node<T>> next;
     std::shared_ptr<T> data;
 }; // Node
+
+} // namespace
 
 template<typename T>
 class LinkedList{
 public:
     LinkedList(){
-        head = nullptr;
-        size = 0;
+        _head = nullptr;
+        _size = 0;
     }
 
     LinkedList(std::shared_ptr<T> head){
         Node<T> temp = {nullptr, head};
-        this->head = std::make_unique<Node<T>>(temp);
-        size = 1;
+        this->_head = std::make_unique<Node<T>>(temp);
+        _size = 1;
     }
 
     void add(std::shared_ptr<T> item){
-        if (head == nullptr){
-            head = std::make_unique<T>(item);
+        if (_head == nullptr){
+            _head = std::make_unique<T>(item);
         }
         else {
-            auto current = *head;
+            auto current = *_head;
             while(current.next != nullptr){
-                current = current.next;
+                current = *current.next;
             }
-            current.next = item;
-            size++;
+            Node<T> temp = {nullptr, item};
+            current.next = std::make_unique<Node<T>>(std::move(temp));
+            _size++;
         }
     }
 
     bool contains(std::shared_ptr<T> item){
-        if (head == nullptr){
+        if (_head == nullptr){
             return false;
         } else {
-            auto current = *head;
-            while (current->next != nullptr) {
+            auto current = *_head;
+            while (current.next != nullptr) {
                 if(*current.data == *item) return true;
                 current = *current.next
             }
@@ -49,28 +54,45 @@ public:
     }
 
     void remove(std::shared_ptr<T> item){
-        if (head != nullptr) {
-            auto last = nullptr;
+        if (_head != nullptr) {
             auto current = *head;
-            while (current->next != nullptr) {
-                if(*current.data == *item) {
-                    last.next = current.next;
-                    return;
-                };
+            if (*current.data == *item){
+                _head = std::move(_head->next);
+                return;
+            }
+            Node<T> last;
+            while (current.next != nullptr) {
                 last = current;
-                current = *current.next
-                size--;
+                current = *current.next;
+                if (*current.data == *item){
+                    last.next = std::move(current.next);
+                    _size--;
+                    return;
+                }
             }
         }
     }
     
     int size(){
-        return size;
+        return _size;
+    }
+
+    std::shared_ptr<T> search(std::shared_ptr<T> item){
+        if (_head == nullptr) return nullptr;
+        if(*_head->data == *item ) return _head->data;
+        auto current = *_head;
+        while(current.next != nullptr){
+            current = *current.next;
+            if(*current.data == *item){
+                return current.data;
+            }
+        }
+        return nullptr;
     }
 
 private:
-int size;
-std::unique_ptr<Node<T>> head;
+    int _size;
+    std::unique_ptr<Node<T>> _head;
 }; // LinkedList
 
 } // namespace mgg

@@ -16,14 +16,26 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+add_library(
+  LinkedList
+  linked_list.h
+)
+
+set_target_properties(
+  LinkedList
+  PROPERTIES LINKER_LANGUAGE CXX
+)
+
 add_executable(
-  test
+  DSTest
   test.cpp
 )
+
 target_link_libraries(
-  test
+  DSTest PUBLIC
   GTest::gtest_main
+  LinkedList
 )
 
 include(GoogleTest)
-gtest_discover_tests(test)
+gtest_discover_tests(DSTest)
