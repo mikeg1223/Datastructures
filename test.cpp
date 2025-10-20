@@ -2,7 +2,11 @@
 #include <memory>
 
 #include "linked_list.h"
+#include "stack.h"
 
+//======================================================
+// |||          Singly Linked List Tests            |||             
+//======================================================
 
 TEST(LinkedListsTests, SingleConstructors){
     std::shared_ptr<int> test_int_ptr = std::make_shared<int>(10);
@@ -68,7 +72,7 @@ TEST(LinkedListsTest, SingleSearch){
     
 }
 
-TEST(LinkedListsTest, Operators){
+TEST(LinkedListsTest, SingleOperators){
     mgg::LinkedList<int> ll1;
     ll1.add(std::make_shared<int>(10));
     ll1.add(std::make_shared<int>(100));
@@ -76,4 +80,28 @@ TEST(LinkedListsTest, Operators){
     mgg::LinkedList<int> ll2 = std::move(ll1);
     EXPECT_EQ(ll2.size(), 2);
     EXPECT_TRUE(ll2.contains(std::make_shared<int>(100)));
+}
+
+//======================================================
+// |||              Stack List Tests                |||             
+//======================================================
+
+TEST(StackTest, Constructors){
+
+}
+
+TEST(StackTest, Push){
+
+}
+
+TEST(StackTest, Pop){
+
+}
+
+TEST(StackTest, Top){
+
+}
+
+TEST(StackTest, SizeAndStorage){
+
 }
