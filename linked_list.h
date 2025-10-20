@@ -30,9 +30,9 @@ public:
             _head = std::make_unique<T>(item);
         }
         else {
-            auto current = *_head;
-            while(current.next != nullptr){
-                current = *current.next;
+            auto current = _head.get();
+            while(current->next != nullptr){
+                current = current->next.get();
             }
             Node<T> temp = {nullptr, item};
             current.next = std::make_unique<Node<T>>(std::move(temp));
@@ -44,10 +44,10 @@ public:
         if (_head == nullptr){
             return false;
         } else {
-            auto current = *_head;
-            while (current.next != nullptr) {
-                if(*current.data == *item) return true;
-                current = *current.next
+            auto current = _head.get();
+            while (current->next != nullptr) {
+                if(*current->data == *item) return true;
+                current = current->next.get();
             }
         }
         return false;
@@ -55,17 +55,17 @@ public:
 
     void remove(std::shared_ptr<T> item){
         if (_head != nullptr) {
-            auto current = *head;
-            if (*current.data == *item){
+            auto current = _head.get();
+            if (*current->data == *item){
                 _head = std::move(_head->next);
                 return;
             }
-            Node<T> last;
+            auto last = current;
             while (current.next != nullptr) {
                 last = current;
-                current = *current.next;
-                if (*current.data == *item){
-                    last.next = std::move(current.next);
+                current = current->next.get();
+                if (*current->data == *item){
+                    last->next = std::move(current->next);
                     _size--;
                     return;
                 }
@@ -80,11 +80,11 @@ public:
     std::shared_ptr<T> search(std::shared_ptr<T> item){
         if (_head == nullptr) return nullptr;
         if(*_head->data == *item ) return _head->data;
-        auto current = *_head;
-        while(current.next != nullptr){
-            current = *current.next;
-            if(*current.data == *item){
-                return current.data;
+        auto current = _head.get();
+        while(current->next != nullptr){
+            current = current->next.get();
+            if(*current->data == *item){
+                return current->data;
             }
         }
         return nullptr;
