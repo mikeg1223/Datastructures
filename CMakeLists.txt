@@ -17,13 +17,13 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_library(
-  LinkedList
-  linked_list.h
+  DataStructures
+  INTERFACE
 )
 
-set_target_properties(
-  LinkedList
-  PROPERTIES LINKER_LANGUAGE CXX
+target_include_directories(
+  DataStructures INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 add_executable(
@@ -34,7 +34,7 @@ add_executable(
 target_link_libraries(
   DSTest PUBLIC
   GTest::gtest_main
-  LinkedList
+  DataStructures
 )
 
 include(GoogleTest)
