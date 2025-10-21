@@ -5,11 +5,9 @@ template<typename T>
 class Stack {
 public:
     Stack() : _data(std::make_unique<int[]>(16)), _size(0), _storage(16) {}
-    Stack(Stack&& other){
-        _data = std::move(other._data);
-        _size = other._size;
-        _storage = other._storage;
-    }
+
+    Stack(const Stack& other) = delete;
+    Stack(Stack&& other) noexcept = default;
 
     void push(T& item){
         if(_size == _storage){
