@@ -1,6 +1,7 @@
 #include <memory>
 #include <stdexcept>
 
+namespace mgg{
 template<typename T>
 class Stack {
 public:
@@ -53,4 +54,6 @@ private:
     std::unique_ptr<std::shared_ptr<T>[]> _data;
     int _size;
     int _storage;
-};
+}; // class Stack
+
+}// namespace mgg

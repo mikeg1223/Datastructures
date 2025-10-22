@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 #include <stdexcept>
+#include <initializer_list>
 
 #include "linked_list.h"
 #include "stack.h"
@@ -9,9 +10,18 @@ struct TestPair{
     std::unique_ptr<int> x;
     std::unique_ptr<int> y;
 
-    bool operator == (const TestPair& other){
-        return *x == *other.x && *y == *other.y;
+    friend bool operator == (const TestPair& first, const TestPair& second) {
+        return *first.x == *second.x && *first.y == *second.y;
     }
+
+    TestPair() : x(nullptr), y(nullptr) {}
+
+    TestPair(const TestPair& other){
+        x = std::make_unique<int>(*other.x);
+        y = std::make_unique<int>(*other.y);
+    }
+
+    TestPair& operator = (TestPair&& other) = default;
 };
 
 //======================================================
@@ -30,7 +40,9 @@ TEST(LinkedListsTests, SingleConstructors){
     EXPECT_EQ(ll3.size(), 1);
     EXPECT_TRUE(ll3.contains(test_int_ptr));
 
-    TestPair tp = {std::make_unique<int>(2), std::make_unique<int>(2)};
+    TestPair tp;
+    tp.x = std::make_unique<int>(2);
+    tp.y = std::make_unique<int>(2);
     std::shared_ptr<TestPair> tp_ptr = std::make_shared<TestPair>(std::move(tp));
     mgg::LinkedList<TestPair> tp_ll(tp_ptr);
     EXPECT_EQ(tp_ll.size(), 1);
@@ -106,7 +118,7 @@ TEST(LinkedListsTest, SingleOperators){
     tp_ll.add(tp_ptr);
     tp_ll.add(tp_ptr2);
 
-    tp_ll2 = std::move(tp_ll);
+    mgg::LinkedList<TestPair> tp_ll2 = std::move(tp_ll);
     EXPECT_EQ(tp_ll2.size(), 2);
     EXPECT_TRUE(tp_ll2.contains(tp_ptr));
     EXPECT_TRUE(tp_ll2.contains(tp_ptr2));
@@ -126,8 +138,8 @@ TEST(StackTest, ConstructorsBasicType){
 
 TEST(StackTest, ConstructorsObjectType){
     mgg::Stack<TestPair> tp_stack;
-    TestPair first = {std::make_unique<>(1), std::make_unique<>(1)};
-    TestPair second = {std::make_unique<>(-1), std::make_unique<>(5)};
+    TestPair first = {std::make_unique<int>(1), std::make_unique<int>(1)};
+    TestPair second = {std::make_unique<int>(-1), std::make_unique<int>(5)};
     tp_stack.push(std::make_shared<TestPair>(std::move(first)));
     tp_stack.push(std::make_shared<TestPair>(std::move(second)));
     mgg::Stack<TestPair> other_tp_stack = std::move(tp_stack);
