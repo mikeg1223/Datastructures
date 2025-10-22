@@ -8,6 +8,10 @@
 struct TestPair{
     std::unique_ptr<int> x;
     std::unique_ptr<int> y;
+
+    bool operator == (const TestPair& other){
+        return *x == *other.x && *y == *other.y;
+    }
 };
 
 //======================================================
@@ -109,12 +113,12 @@ TEST(LinkedListsTest, SingleOperators){
 }
 
 //======================================================
-// |||              Stack List Tests                |||             
+// |||                Stack Tests                   |||             
 //======================================================
 
 TEST(StackTest, ConstructorsBasicType){
     mgg::Stack<int> stack;
-    stack.push(10);
+    stack.push(std::make_shared<int>(10));
     mgg::Stack<int> other_stack(std::move(stack));
     EXPECT_EQ(other_stack.size(), 1);
     EXPECT_EQ(other_stack.storage(), 16);
@@ -124,8 +128,8 @@ TEST(StackTest, ConstructorsObjectType){
     mgg::Stack<TestPair> tp_stack;
     TestPair first = {std::make_unique<>(1), std::make_unique<>(1)};
     TestPair second = {std::make_unique<>(-1), std::make_unique<>(5)};
-    tp_stack.push(first);
-    tp_stack.push(second);
+    tp_stack.push(std::make_shared<TestPair>(std::move(first)));
+    tp_stack.push(std::make_shared<TestPair>(std::move(second)));
     mgg::Stack<TestPair> other_tp_stack = std::move(tp_stack);
     EXPECT_EQ(other_tp_stack.size(), 2);
     EXPECT_EQ(other_tp_stack.storage(), 16);
@@ -137,8 +141,8 @@ TEST(StackTest, OperationsBasicType){
     EXPECT_EQ(stack.storage(), 16);
 
     for(int i = 0; i < 18; ++i){
-        stack.push(i);
-        EXPECT_EQ(stack.top(), i);
+        stack.push(std::make_shared<int>(i));
+        EXPECT_EQ(*stack.top(), i);
         EXPECT_EQ(stack.size(), i+1);
         if (i >= 16){
             EXPECT_EQ(stack.storage(), 32);
@@ -148,7 +152,7 @@ TEST(StackTest, OperationsBasicType){
     }
 
     for(int i = 17; i >= 0; --i){
-        EXPECT_EQ(stack.top(), i);
+        EXPECT_EQ(*stack.top(), i);
         EXPECT_EQ(stack.size(), i+1);
         EXPECT_EQ(stack.storage(), 32);
         stack.pop();
@@ -164,9 +168,9 @@ TEST(StackTest, OperationsObjectType){
     EXPECT_EQ(stack.storage(), 16);
 
     for(int i = 0; i < 18; ++i){
-        TestPair temp = {std::make_unique<>(i), std::make_unique<>(i)};
-        stack.push(temp);
-        EXPECT_EQ(stack.top(), i);
+        TestPair temp = {std::make_unique<int>(i), std::make_unique<int>(i)};
+        stack.push(std::make_shared<TestPair>(temp));
+        EXPECT_EQ(*stack.top(), temp);
         EXPECT_EQ(stack.size(), i+1);
         if (i >= 16){
             EXPECT_EQ(stack.storage(), 32);
@@ -176,7 +180,8 @@ TEST(StackTest, OperationsObjectType){
     }
 
     for(int i = 17; i >= 0; --i){
-        EXPECT_EQ(stack.top(), i);
+        TestPair compair = {std::make_unique<int>(i), std::make_unique<int>(i)};
+        EXPECT_EQ(*stack.top(), compair);
         EXPECT_EQ(stack.size(), i+1);
         EXPECT_EQ(stack.storage(), 32);
         stack.pop();
@@ -184,3 +189,7 @@ TEST(StackTest, OperationsObjectType){
     EXPECT_EQ(stack.size(), 0);
     EXPECT_THROW({stack.top();}, std::out_of_range);
 }
+
+//======================================================
+// |||                Queue Tests                   |||             
+//======================================================
