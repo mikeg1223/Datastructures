@@ -22,6 +22,18 @@ struct TestPair{
     }
 
     TestPair& operator = (TestPair&& other) = default;
+
+    TestPair& operator = (std::initializer_list<int> args){
+        auto itr = args.begin();
+        x = std::make_unique<int>(*itr++);
+        y = std::make_unique<int>(*itr);
+    }
+
+    TestPair(const std::initializer_list<int> args){
+        auto itr = args.begin();
+        x = std::make_unique<int>(*itr++);
+        y = std::make_unique<int>(*itr);
+    }
 };
 
 //======================================================
@@ -109,8 +121,8 @@ TEST(LinkedListsTest, SingleOperators){
     EXPECT_EQ(ll2.size(), 2);
     EXPECT_TRUE(ll2.contains(std::make_shared<int>(100)));
 
-    TestPair tp = {std::make_unique<int>(2), std::make_unique<int>(2)};
-    TestPair tp2 = {std::make_unique<int>(-1), std::make_unique<int>(5)};
+    TestPair tp = {2, 2};
+    TestPair tp2 = {-1, 5};
     std::shared_ptr<TestPair> tp_ptr = std::make_shared<TestPair>(std::move(tp));
     std::shared_ptr<TestPair> tp_ptr2 = std::make_shared<TestPair>(std::move(tp2));
 
@@ -138,8 +150,8 @@ TEST(StackTest, ConstructorsBasicType){
 
 TEST(StackTest, ConstructorsObjectType){
     mgg::Stack<TestPair> tp_stack;
-    TestPair first = {std::make_unique<int>(1), std::make_unique<int>(1)};
-    TestPair second = {std::make_unique<int>(-1), std::make_unique<int>(5)};
+    TestPair first = {1, 1};
+    TestPair second = {-1, 5};
     tp_stack.push(std::make_shared<TestPair>(std::move(first)));
     tp_stack.push(std::make_shared<TestPair>(std::move(second)));
     mgg::Stack<TestPair> other_tp_stack = std::move(tp_stack);
@@ -180,7 +192,7 @@ TEST(StackTest, OperationsObjectType){
     EXPECT_EQ(stack.storage(), 16);
 
     for(int i = 0; i < 18; ++i){
-        TestPair temp = {std::make_unique<int>(i), std::make_unique<int>(i)};
+        TestPair temp = {i, i};
         stack.push(std::make_shared<TestPair>(temp));
         EXPECT_EQ(*stack.top(), temp);
         EXPECT_EQ(stack.size(), i+1);
@@ -192,7 +204,7 @@ TEST(StackTest, OperationsObjectType){
     }
 
     for(int i = 17; i >= 0; --i){
-        TestPair compair = {std::make_unique<int>(i), std::make_unique<int>(i)};
+        TestPair compair = {i, i};
         EXPECT_EQ(*stack.top(), compair);
         EXPECT_EQ(stack.size(), i+1);
         EXPECT_EQ(stack.storage(), 32);
