@@ -1,15 +1,9 @@
+#pragma once
+
 #include <memory>
+
+#include "node.h"
 namespace mgg{
-
-namespace {
-
-template <typename T>
-struct Node{
-    std::unique_ptr<Node<T>> next;
-    std::shared_ptr<T> data;
-}; // Node
-
-} // namespace
 
 template<typename T>
 class LinkedList{
@@ -20,8 +14,8 @@ public:
     }
 
     LinkedList(std::shared_ptr<T> head){
-        Node<T> temp = {nullptr, head};
-        _head = std::make_unique<Node<T>>(std::move(temp));
+        LinkedListNode<T> temp = {{head}, nullptr};
+        _head = std::make_unique<LinkedListNode<T>>(std::move(temp));
         _size = 1;
     }
 
@@ -30,8 +24,8 @@ public:
 
     void add(std::shared_ptr<T> item){
         if (_head == nullptr){
-            Node<T> temp = {nullptr, item};
-            _head = std::make_unique<Node<T>>(std::move(temp));
+            LinkedListNode<T> temp = {{item}, nullptr};
+            _head = std::make_unique<LinkedListNode<T>>(std::move(temp));
             _size++;
         }
         else {
@@ -39,8 +33,8 @@ public:
             while(current->next != nullptr){
                 current = current->next.get();
             }
-            Node<T> temp = {nullptr, item};
-            current->next = std::make_unique<Node<T>>(std::move(temp));
+            LinkedListNode<T> temp = {{item}, nullptr};
+            current->next = std::make_unique<LinkedListNode<T>>(std::move(temp));
             _size++;
         }
     }
@@ -101,7 +95,7 @@ public:
 
 private:
     int _size;
-    std::unique_ptr<Node<T>> _head;
+    std::unique_ptr<LinkedListNode<T>> _head;
 }; // LinkedList
 
 } // namespace mgg
