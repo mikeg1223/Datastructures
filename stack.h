@@ -27,7 +27,7 @@ public:
         if(_size == 0){
             throw std::out_of_range("There are no items in the stack");
         }
-        return _data[_size];
+        return _data[_size-1];
         
     }
 

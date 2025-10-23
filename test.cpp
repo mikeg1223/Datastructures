@@ -166,7 +166,7 @@ TEST(StackTest, OperationsBasicType){
 
     for(int i = 0; i < 18; ++i){
         stack.push(std::make_shared<int>(i));
-        EXPECT_EQ(*stack.top(), i);
+        EXPECT_EQ(*(stack.top()), i);
         EXPECT_EQ(stack.size(), i+1);
         if (i >= 16){
             EXPECT_EQ(stack.storage(), 32);
