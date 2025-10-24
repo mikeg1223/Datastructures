@@ -9,9 +9,52 @@ template<typename T>
 class Queue{
 public:
 
+    Queue() {
+        DoublyLinkedListNode<T> temp = {{nullptr}, nullptr, nullptr};
+        _sentinel = std::make_unique<DoublyLinkedListNode<T>>(temp);
+        _size = 0;
+    }
+
+    Queue(Queue<T>&& other) noexcept = default;
+
+    Queue(Queue<T>& other) = delete;
+
+    void push(std::shared_ptr<T> item){
+        DoublyLinkedListNode<T> curr_node = {{item}, nullptr, nullptr};
+        std::shared_ptr<DoublyLinkedListNode<T>> curr_node_ptr = std::make_shared<DoublyLinkedListNode<T>>(curr_node);
+        if( _size == 0){
+            curr_node_ptr->next = _sentinel;
+            curr_node_ptr->last = _sentinel;
+            _sentinel->next = curr_node_ptr;
+            _sentinel->last = curr_node_ptr;
+        } else {
+            curr_node_ptr->last = _sentinel->last;
+            curr_node_ptr->next = _sentinel;
+            _sentinel->last->next = curr_node_ptr;
+            _sentinel->last = curr_node_ptr;
+        }
+        _size++;
+    }
+
+    void pop(){
+        if( _size == 1){
+            _sentinel->next = nullptr;
+            _sentinel->next = nullptr;
+        } else if (_size != 0){
+
+        }
+    }
+
+    std::shared_ptr<T> front(){
+        if(_size <= 0){
+            throw std::out_of_range("There are no items in the queue");
+        }
+    }
+
+
 private:
-std::unique_ptr<DoublyLinkedListNode<T>> _head;
-std::unique_ptr<DoublyLinkedListNode<T>> _tail;
+    std::unique_ptr<DoublyLinkedListNode<T>> _sentinel;
+    int _size;
 };
 
 

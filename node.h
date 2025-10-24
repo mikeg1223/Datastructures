@@ -12,19 +12,19 @@ struct  Node{
 template <typename T>
 struct LinkedListNode : public Node<T> {
     std::unique_ptr<LinkedListNode<T>> next;
-} // LinkedListNode
+}; // LinkedListNode
 
 template <typename T>
 struct DoublyLinkedListNode : public Node<T> {
-    std::unique_ptr<DoublyLinkedListNode<T>> next;
-    std::unique_ptr<DoublyLinkedListNode<T>> last;
-} // DoublyLinkedListNode
+    std::shared_ptr<DoublyLinkedListNode<T>> next;
+    std::shared_ptr<DoublyLinkedListNode<T>> last;
+}; // DoublyLinkedListNode
 
 template <typename T>
 struct BinaryTreeNode : public Node<T> {
     std::unique_ptr<BinaryTreeNode<T>> parent;
     std::unique_ptr<BinaryTreeNode<T>> left;
     std::unique_ptr<BinaryTreeNode<T>> right;
-} // class BinaryTreeNode
+}; // class BinaryTreeNode
 
 } // namespace mgg
