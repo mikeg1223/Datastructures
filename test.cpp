@@ -5,6 +5,7 @@
 
 #include "linked_list.h"
 #include "stack.h"
+#include "queue.h"
 
 struct TestPair{
     std::unique_ptr<int> x;
@@ -217,6 +218,70 @@ TEST(StackTest, OperationsObjectType){
 //======================================================
 // |||                Queue Tests                   |||             
 //======================================================
+
+TEST(QueueTest, Constructors){
+    mgg::Queue<int> int_q;
+    mgg::Queue<TestPair> obj_q;
+
+    EXPECT_EQ(int_q.size(), 0);
+    EXPECT_EQ(obj_q.size(), 0);
+
+    int_q.push(std::make_shared<int>(8));
+
+    TestPair obj = {1, 1};
+    obj_q.push(std::make_shared<TestPair>(std::move(obj)));
+
+    mgg::Queue<int> moved_int_q = std::move(int_q);
+    mgg::Queue<TestPair> moved_obj_q = std::move(obj_q);
+
+    EXPECT_EQ(moved_int_q.size(), 1);
+    EXPECT_EQ(moved_obj_q.size(), 1);
+    EXPECT_EQ(*moved_int_q.front(), 8);
+    EXPECT_EQ(*moved_obj_q.front(), obj);
+}
+
+TEST(QueueTest, BasicDataOperators){
+    mgg::Queue<int> q;
+    for(int i = 1; i <= 16; ++i){
+        q.push(std::make_shared<int>(i));
+        EXPECT_EQ(q.size(), i);
+        EXPECT_EQ(*q.front(), i);
+        EXPECT_FALSE(q.contains(std::make_shared<int>(i+1)));
+    }
+    for(int i = 16; i > 0; --i){
+        EXPECT_EQ(q.size(), i);
+        EXPECT_EQ(*q.front(), i);
+        for(int j = 1; j < i; ++j) EXPECT_TRUE(q.contains(std::make_shared<int>(i)));
+        q.pop();
+    }
+    EXPECT_EQ(q.size(), 0);
+    EXPECT_THROW({q.front();}, std::out_of_range);
+}
+
+TEST(QueueTest, ObjectOperators){
+    mgg::Queue<TestPair> q;
+    for(int i = 1; i <= 16; ++i){
+        TestPair temp = {i, i};
+        q.push(std::make_shared<TestPair>(temp));
+        EXPECT_EQ(q.size(), i);
+        EXPECT_EQ(*q.front(), temp);
+        TestPair not_there_temp = {i+1, i+1};
+        EXPECT_FALSE(q.contains(std::make_shared<TestPair>(not_there_temp)));
+    }
+    for(int i = 16; i > 0; --i){
+        TestPair temp = {i, i};
+        EXPECT_EQ(q.size(), i);
+        EXPECT_EQ(*q.front(), temp);
+        for(int j = 1; j < i; ++j){
+            TestPair inner_temp = {j,j};
+            EXPECT_TRUE(q.contains(std::make_shared<TestPair>(inner_temp)));
+        }
+        q.pop();
+    }
+    EXPECT_EQ(q.size(), 0);
+    EXPECT_THROW({q.front();}, std::out_of_range);
+
+}
 
 //======================================================
 // |||                 Tree Tests                   |||             

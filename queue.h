@@ -54,6 +54,21 @@ public:
         return _sentinel->next->data;
     }
 
+    bool contains(std::shared_ptr<T> item){
+        if(_size > 0){
+            std::shared_ptr<DoublyLinkedListNode<T>> curr = _sentinel->next;
+            while(*curr->data != *item && curr->next != _sentinel){
+                curr = curr->next
+            }
+            return *curr->data == *item;
+        }
+        return false;
+    }
+
+    int size(){
+        return _size;
+    }
+
 
 private:
     std::unique_ptr<DoublyLinkedListNode<T>> _sentinel;
