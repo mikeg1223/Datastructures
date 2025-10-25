@@ -39,9 +39,11 @@ public:
     void pop(){
         if( _size == 1){
             _sentinel->next = nullptr;
-            _sentinel->next = nullptr;
+            _sentinel->last = nullptr;
+            _size = 0;
         } else if (_size != 0){
-
+            _sentinel->next = _sentinel->next->next;
+            _size--;
         }
     }
 
@@ -49,6 +51,7 @@ public:
         if(_size <= 0){
             throw std::out_of_range("There are no items in the queue");
         }
+        return _sentinel->next->data;
     }
 
 
