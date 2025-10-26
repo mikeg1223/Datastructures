@@ -98,4 +98,7 @@ private:
     std::unique_ptr<LinkedListNode<T>> _head;
 }; // LinkedList
 
+template <typename T>
+class DoublyLinkedList;
+
 } // namespace mgg

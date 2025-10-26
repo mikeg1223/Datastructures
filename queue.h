@@ -23,13 +23,13 @@ public:
         DoublyLinkedListNode<T> curr_node = {{item}, nullptr, nullptr};
         std::shared_ptr<DoublyLinkedListNode<T>> curr_node_ptr = std::make_shared<DoublyLinkedListNode<T>>(curr_node);
         if( _size == 0){
-            curr_node_ptr->next = _sentinel;
-            curr_node_ptr->last = _sentinel;
+            curr_node_ptr->next = nullptr;
+            curr_node_ptr->last = nullptr;
             _sentinel->next = curr_node_ptr;
             _sentinel->last = curr_node_ptr;
         } else {
             curr_node_ptr->last = _sentinel->last;
-            curr_node_ptr->next = _sentinel;
+            curr_node_ptr->next = nullptr;
             _sentinel->last->next = curr_node_ptr;
             _sentinel->last = curr_node_ptr;
         }
@@ -55,10 +55,11 @@ public:
     }
 
     bool contains(std::shared_ptr<T> item){
+        // assumes comparable
         if(_size > 0){
             std::shared_ptr<DoublyLinkedListNode<T>> curr = _sentinel->next;
-            while(*curr->data != *item && curr->next != _sentinel){
-                curr = curr->next
+            while(!(*curr->data == *item) && curr->next != nullptr){
+                curr = curr->next;
             }
             return *curr->data == *item;
         }

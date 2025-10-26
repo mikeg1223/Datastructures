@@ -4,10 +4,17 @@
 #include <stdexcept>
 
 namespace mgg{
-template<typename T>
+
+namespace {
+    int _MIN_STORAGE = 16;
+    int _SHRINKING_FACTOR = 8;
+    int _GROWTH_FACTOR = 2;
+}
+
+    template<typename T>
 class Stack {
 public:
-    Stack() : _data(std::make_unique<std::shared_ptr<T>[]>(16)), _size(0), _storage(16) {}
+    Stack() : _data(std::make_unique<std::shared_ptr<T>[]>(_MIN_STORAGE)), _size(0), _storage(_MIN_STORAGE) {}
 
     Stack(const Stack& other) = delete;
     Stack(Stack&& other) noexcept = default;
@@ -21,7 +28,9 @@ public:
 
     void pop(){
         if (_size != 0){
-            --_size;
+            if(--_size < _storage/_SHRINKING_FACTOR && _storage > _MIN_STORAGE){
+                shrink();
+            }
         }
     }
 
@@ -45,7 +54,16 @@ public:
 private:
 
     void expand(){
-        _storage *= 2;
+        _storage *= _GROWTH_FACTOR;
+        std::unique_ptr<std::shared_ptr<T>[]> temp = std::make_unique<std::shared_ptr<T>[]>(_storage);
+        for(int i = 0; i < _size; ++i){
+            temp[i] = _data[i];
+        }
+        _data = std::move(temp);
+    }
+
+    void shrink(){
+        _storage = _storage/ _SHRINKING_FACTOR < _MIN_STORAGE ? _MIN_STORAGE : _storage/ _SHRINKING_FACTOR;
         std::unique_ptr<std::shared_ptr<T>[]> temp = std::make_unique<std::shared_ptr<T>[]>(_storage);
         for(int i = 0; i < _size; ++i){
             temp[i] = _data[i];

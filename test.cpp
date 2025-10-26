@@ -245,13 +245,13 @@ TEST(QueueTest, BasicDataOperators){
     for(int i = 1; i <= 16; ++i){
         q.push(std::make_shared<int>(i));
         EXPECT_EQ(q.size(), i);
-        EXPECT_EQ(*q.front(), i);
+        EXPECT_EQ(*q.front(), 1);
         EXPECT_FALSE(q.contains(std::make_shared<int>(i+1)));
     }
     for(int i = 16; i > 0; --i){
         EXPECT_EQ(q.size(), i);
-        EXPECT_EQ(*q.front(), i);
-        for(int j = 1; j < i; ++j) EXPECT_TRUE(q.contains(std::make_shared<int>(i)));
+        EXPECT_EQ(*q.front(), 17-i);
+        for(int j = 16; j > 17 - i; --j) EXPECT_TRUE(q.contains(std::make_shared<int>(j)));
         q.pop();
     }
     EXPECT_EQ(q.size(), 0);
@@ -260,19 +260,20 @@ TEST(QueueTest, BasicDataOperators){
 
 TEST(QueueTest, ObjectOperators){
     mgg::Queue<TestPair> q;
+    TestPair front = {1,1};
     for(int i = 1; i <= 16; ++i){
         TestPair temp = {i, i};
         q.push(std::make_shared<TestPair>(temp));
         EXPECT_EQ(q.size(), i);
-        EXPECT_EQ(*q.front(), temp);
+        EXPECT_EQ(*q.front(), front);
         TestPair not_there_temp = {i+1, i+1};
         EXPECT_FALSE(q.contains(std::make_shared<TestPair>(not_there_temp)));
     }
     for(int i = 16; i > 0; --i){
-        TestPair temp = {i, i};
+        TestPair temp = {17-i, 17-i};
         EXPECT_EQ(q.size(), i);
         EXPECT_EQ(*q.front(), temp);
-        for(int j = 1; j < i; ++j){
+        for(int j = 16; j > 177 - i; --j){
             TestPair inner_temp = {j,j};
             EXPECT_TRUE(q.contains(std::make_shared<TestPair>(inner_temp)));
         }
